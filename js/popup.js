@@ -403,6 +403,18 @@ class Popup extends HTMLElement {
     }
 
     when_mask_editor_closes() {
+        // iPad Safari fix (2026-05-21): if the ComfyUI mask editor never actually
+        // appeared (seen_editor stays false on iPad Safari / iPad Chrome because
+        // ComfyUI's built-in mask editor relies on APIs that WebKit on iOS does
+        // not fully support), do NOT fake a masked_image with the original image's
+        // filename — that filename lives in temp/, but the backend's load_mask
+        // hardcodes type="clipspace" which causes a FileNotFoundError. Send an
+        // empty response instead so the backend's no-mask path handles it cleanly.
+        if (!this.seen_editor) {
+            this._send_response({})
+            remove_preview(this.node)
+            return
+        }
         if (this.node.imgs?.[0]?.src) {
             this._send_response({masked_image:this.extract_filename(this.node.imgs[0].src)})
         } else {
