@@ -38,6 +38,7 @@ or jump down to [example workflows](#example-workflows) for more examples.
 ## New in 1.9
 
 - [Custom audio](#audiofile)
+- double-click in text field in `TextImageFilter` to insert last sent text
 
 ## New in 1.8
 
