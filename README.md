@@ -168,7 +168,9 @@ generated. Here's a trivial workflow:
 
 ![text workflow](images/text%20workflow.png)
 
-Typing shortcuts. If you find you often use the same text in the `text` field, you can create shortcuts in the `tip` by enclosing them `{{ like this }}`
+Typing shortcuts. If you find you often use the same text in the `text` field, you can create shortcuts in the `tip` by enclosing them `{{ like this }}`.
+
+If you double-click in the text area, it will replace the contents with the text from the previous run (useful if you are tweaking the text for the same image)
 
 ---
 
