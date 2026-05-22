@@ -52,9 +52,11 @@ class FilterNodeBase:
     @classmethod
     def stack_masks(cls, masks:torch.Tensor|None, images_to_return:list[int]) -> torch.Tensor|None:
         return cls.stack_images(masks, images_to_return)
+    
+    @classmethod
+    def fingerprint_inputs(cls, **kwargs) -> Any: return random.random()
 
-
-class ImageFilter(io.ComfyNode, FilterNodeBase):
+class ImageFilter(FilterNodeBase, io.ComfyNode):
     @classmethod
     def define_schema(cls):
         return io.Schema(
@@ -158,7 +160,7 @@ class ImageFilter(io.ComfyNode, FilterNodeBase):
                 
         return io.NodeOutput(images, latents, masks, e1, e2, e3, ",".join(str(x+pick_list_start) for x in images_to_return))
     
-class TextImageFilterWithExtras(io.ComfyNode, FilterNodeBase):
+class TextImageFilter(FilterNodeBase, io.ComfyNode):
 
     @classmethod
     def define_schema(cls):
@@ -209,7 +211,6 @@ class TextImageFilterWithExtras(io.ComfyNode, FilterNodeBase):
             return io.NodeOutput(image, text, extra1, extra2, extra3)
 
         return io.NodeOutput(image, response.text, *response.get_extras((extra1, extra2, extra3)))
-    
 
 def mask_to_image(mask:torch.Tensor):
     return torch.stack([mask, mask, mask, 1.0-mask], -1)
@@ -253,7 +254,7 @@ class InOutStore:
         finally:
             self.previous_inputs = [ make_copy(x) for x in args ]
     
-class MaskImageFilter(io.ComfyNode, FilterNodeBase):
+class MaskImageFilter(FilterNodeBase, io.ComfyNode):
     @classmethod
     def define_schema(cls):
         return io.Schema(
@@ -332,7 +333,3 @@ class MaskImageFilter(io.ComfyNode, FilterNodeBase):
         if (image.shape[0:3] != mask.shape[0:3]):
             print(f"Mask shape {mask.shape} does not match image shape {image.shape}")
         return io.NodeOutput( *iostore.get_last() )
-
-    @classmethod
-    def fingerprint_inputs(cls, **kwargs) -> Any:
-        return random.random()
